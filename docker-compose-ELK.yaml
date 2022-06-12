@@ -1,0 +1,44 @@
+version: '3'
+services:
+  elasticsearch:
+    image: "elasticsearch:7.9.1"
+    environment:
+      - discovery.type=single-node
+    volumes:
+#      - ./elasticsearch/elasticsearch/config/:/usr/share/elasticsearch/config/
+      - ./elasticsearch/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./elasticsearch/elasticsearch/config/jvm.options:/usr/share/elasticsearch/config/jvm.options
+    networks:
+      - qyt_net
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    restart: always
+  kibana:
+    image: "kibana:7.9.1"
+    volumes:
+      - ./kibana/kibana/config/:/usr/share/kibana/config/
+    networks:
+      - qyt_net
+    ports:
+      - "5601:5601"
+    depends_on:
+      - "elasticsearch"
+    restart: always
+  logstash:
+    image: "logstash:7.9.1"
+    volumes:
+      - ./logstash/logstash/pipeline/:/usr/share/logstash/pipeline/
+      - ./logstash/logstash/custom_regex/:/usr/share/logstash/custom_regex/
+    networks:
+      - qyt_net
+    ports:
+      - "514:51400/udp"
+    depends_on:
+      - "elasticsearch"
+      - "kibana"
+    restart: always
+
+networks:
+  qyt_net:
+    driver: bridge

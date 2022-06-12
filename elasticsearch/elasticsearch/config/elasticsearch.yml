@@ -1,0 +1,4 @@
+node.name: node-1
+cluster.name: "docker_cluster"
+network.host: 0.0.0.0
+

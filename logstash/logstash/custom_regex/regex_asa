@@ -1,0 +1,1 @@
+ASA %ASA-(?<priv>\d*)-(?<log_id>\d*): (?<text>.*)
